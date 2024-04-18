@@ -8,6 +8,8 @@ package Controller;
 import Model.Pair;
 import Model.Person;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 
 /**
@@ -29,16 +31,16 @@ public class HomeManager {
     double sumflex = 0;
     double sumno = 0;
 
+    public HomeManager() {
+
+    }
+
     public void nhapSoLuong(int n) {
         this.n = n;
         p = new ArrayList<>();
         plon = new ArrayList<>();
         pbe = new ArrayList<>();
         pair = new ArrayList<>();
-    }
-
-    public HomeManager() {
-
     }
 
     public void nhapThanhVien(int n) {
@@ -48,6 +50,44 @@ public class HomeManager {
             System.out.print("Member " + (i + 1) + ": ");
             String name = input.nextLine();
             p.add(new Person(name)); //them thanh vien vao mang p
+        }
+    }
+
+    public void setPair(int n) {//tao nC2 cap voi so tien no nhat dinh
+        pair.ensureCapacity(n * (n - 1) / 2);
+        int a = 0;
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (a < pair.size()) {
+                    pair.get(a).setPerson1(p.get(i));
+                    pair.get(a).setPerson2(p.get(j));
+                } else {
+                    pair.add(new Pair(p.get(i), p.get(j), 0.0));
+                }
+                a++;
+            }
+        }
+        System.out.println("Enter pair's debt");
+        System.out.println("If it is a correct direction, enter positive numbers ");
+        System.out.println("Else, enter negative numbers");
+        System.out.println("Enter 'next' to move on to the next pair!");
+        for (int i = 0; i < pair.size(); i++) {//tien no la tien no
+            System.out.print(pair.get(i).getPerson1().getName() + " owe " + pair.get(i).getPerson2().getName() + ": ");
+            double sum = 0;
+            while (true) {
+                String nhaptienno = input.nextLine();
+                if (nhaptienno.equalsIgnoreCase("next")) {
+                    break;
+                } else {
+                    try {
+                        double parsetienno = Double.parseDouble(nhaptienno);
+                        sum += parsetienno;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input! Please enter next or a valid number");
+                    }
+                }
+            }
+            pair.get(i).setTienno(sum);
         }
     }
 
@@ -128,27 +168,6 @@ public class HomeManager {
         }
     }
 
-    public void chia2Mang() {//chia 2 mang de tinh toan
-        for (int i = 0; i < n; i++) {
-            if (p.get(i).getDiff() > 0) {
-                plon.add(p.get(i)); //plon bao gom nhung thanh vien duoc nhan tien
-                n1++;
-            } else if (p.get(i).getDiff() < 0) {
-                pbe.add(p.get(i));//pbe bao gom nhung thanh vien phai tra tien
-                n2++;
-            }
-        }
-        while (n1 != n2) {//truong hop 2 mang chenh lech do so nguoi le
-            if (n1 > n2) {
-                pbe.add(new Person("newname", false, 0, 0, 0, 0));
-                n2++;
-            } else if (n1 < n2) {
-                plon.add(new Person("newname", false, 0, 0, 0, 0));
-                n1++;
-            }
-        }
-    }
-
     public void checkAdmin() {//admin se la nguoi chuyen khoan thanh toan cac khoan chi tieu
         int count = 0;
         boolean check = true;
@@ -171,50 +190,51 @@ public class HomeManager {
         } while (check);
     }
 
-    public void setPair(int n) {//tao nC2 cap voi so tien no nhat dinh
-        pair.ensureCapacity(n * (n - 1) / 2);
-        int a = 0;
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = i + 1; j < n; j++) {
-                if (a < pair.size()) {
-                    pair.get(a).setPerson1(p.get(i));
-                    pair.get(a).setPerson2(p.get(j));
-                } else {
-                    pair.add(new Pair(p.get(i), p.get(j), 0.0));
-                }
-                a++;
-            }
-        }
-        System.out.println("Enter pair's debt");
-        System.out.println("If it is a correct direction, enter positive numbers ");
-        System.out.println("Else, enter negative numbers");
-        System.out.println("Enter 'next' to move on to the next pair!");
-        for (int i = 0; i < pair.size(); i++) {//tien no la tien no
-            System.out.print(pair.get(i).getPerson1().getName() + " owe " + pair.get(i).getPerson2().getName() + ": ");
-            double sum = 0;
-            while (true) {
-                String nhaptienno = input.nextLine();
-                if (nhaptienno.equalsIgnoreCase("next")) {
-                    break;
-                } else {
-                    try {
-                        double parsetienno = Double.parseDouble(nhaptienno);
-                        sum += parsetienno;
-                    } catch (NumberFormatException e) {
-                        System.out.println("Invalid input! Please enter next or a valid number");
-                    }
-                }
-            }
-            pair.get(i).setTienno(sum);
-        }
-    }
-
     public void setCungSetMem() {//set tien cung tien mem cho tung cap ---- thu tu cap nhu sau Person1 Person 2 tienno <=> Person1 no Person2: tienno => neu tien no < 0 => Person2 no Person1: Math.abs(tienno)
         for (int i = 0; i < pair.size(); i++) {
             if (pair.get(i).getPerson1().isAdmin()) {//neu admin la Person1
                 pair.get(i).setTienno(-pair.get(i).getPerson2().getCung() - pair.get(i).getPerson2().getMem() + pair.get(i).getTienno());
             } else if (pair.get(i).getPerson2().isAdmin()) {//neu admin la Person2
                 pair.get(i).setTienno(pair.get(i).getPerson1().getCung() + pair.get(i).getPerson1().getMem() + pair.get(i).getTienno());
+            }
+        }
+    }
+
+    public void chia2Mang() {//chia 2 mang de tinh toan
+        for (int i = 0; i < n; i++) {
+            if (p.get(i).getDiff() > 0) {
+                plon.add(p.get(i)); //plon bao gom nhung thanh vien duoc nhan tien
+                n1++;
+            } else if (p.get(i).getDiff() < 0) {
+                pbe.add(p.get(i));//pbe bao gom nhung thanh vien phai tra tien
+                n2++;
+            }
+        }
+        while (n1 != n2) {//truong hop 2 mang chenh lech do so nguoi le
+            if (n1 > n2) {
+                pbe.add(new Person("newname", false, 0, 0, 0, 0));
+                n2++;
+            } else if (n1 < n2) {
+                plon.add(new Person("newname", false, 0, 0, 0, 0));
+                n1++;
+            }
+        }
+        Collections.sort(pbe, (Person p1, Person p2) -> Double.compare(p1.getDiff(), p2.getDiff()));
+        Collections.sort(plon, (Person p1, Person p2) -> Double.compare(p1.getDiff(), p2.getDiff()));
+
+    }
+
+    public void tinhTurn() {
+        while (true) {
+            System.out.println("Nhap so nguoi se tinh luot nay:");
+            int n = input.nextInt();
+            input.nextLine();
+            System.out.println("Enter member (" + n + ")");
+            //Nhap ten thanh vien
+            for (int i = 0; i < n; ++i) {
+                System.out.print("Member " + (i + 1) + ": ");
+                String name = input.nextLine();
+                
             }
         }
     }

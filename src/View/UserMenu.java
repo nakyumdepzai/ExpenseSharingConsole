@@ -32,8 +32,9 @@ public class UserMenu {
                 do {
                     System.out.println("USER MENU:");
                     System.out.println("1-Update Profile");
-                    System.out.println("2-Expense Calculate");
-                    System.out.println("3-Log out");
+                    System.out.println("2-Shared Expense Calculate");
+                    System.out.println("3-All Expense Calculate");
+                    System.out.println("4-Log out");
                     System.out.print("Enter your choice: ");
                     choice = Integer.parseInt(input.nextLine());
                     if (choice > 3 || choice < 1) {
@@ -45,9 +46,22 @@ public class UserMenu {
                     case 1:
                         au.updateUserProfile();
                         break;
+
                     case 2:
                         System.out.print("Nhap so nguoi: ");
                         int n = input.nextInt();
+                        input.nextLine();
+                        hm.nhapSoLuong(n);
+                        hm.nhapThanhVien(n);
+                        hm.setPair(n);
+                        hm.nhapTienFlex();
+                        hm.setCungSetMem();
+                        hm.chia2Mang();
+                        hm.tinhTien();
+                        break;
+                    case 3:
+                        System.out.print("Nhap so nguoi: ");
+                        n = input.nextInt();
                         input.nextLine();
                         hm.nhapSoLuong(n);
                         hm.nhapThanhVien(n);
@@ -60,7 +74,7 @@ public class UserMenu {
                         hm.chia2Mang();
                         hm.tinhTien();
                         break;
-                    case 3:
+                    case 4:
                         au.logOut();
                         break;
                 }
