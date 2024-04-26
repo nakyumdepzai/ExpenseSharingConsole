@@ -38,26 +38,26 @@ public class UserMenu {
                     System.out.print("Enter your choice: ");
                     choice = Integer.parseInt(input.nextLine());
                     if (choice > 3 || choice < 1) {
-                        System.err.println("Enter your choice from 1 - 8!");
+                        System.err.println("Enter your choice from 1 - 4!");
                     }
-                } while (choice > 3 || choice < 1);
+                } while (choice > 4 || choice < 1);
 
                 switch (choice) {
                     case 1:
                         au.updateUserProfile();
                         break;
-
                     case 2:
-                        System.out.print("Nhap so nguoi: ");
+                            System.out.print("Enter number of people: ");
                         int n = input.nextInt();
                         input.nextLine();
                         hm.nhapSoLuong(n);
                         hm.nhapThanhVien(n);
                         hm.setPair(n);
-                        hm.nhapTienFlex();
-                        hm.setCungSetMem();
-                        hm.chia2Mang();
-                        hm.tinhTien();
+                        hm.tinhTurn();
+//                        hm.nhapTienFlex();
+//                        hm.setCungSetMem();
+//                        hm.chia2Mang();
+//                        hm.tinhTien();
                         break;
                     case 3:
                         System.out.print("Nhap so nguoi: ");
@@ -68,11 +68,13 @@ public class UserMenu {
                         hm.setPair(n);
                         hm.nhapTienCung();
                         hm.nhapTienMem();
-                        hm.nhapTienFlex();
                         hm.checkAdmin();
-                        hm.setCungSetMem();
-                        hm.chia2Mang();
-                        hm.tinhTien();
+                        hm.tinhTurn();
+//                        hm.nhapTienFlex(n);
+//                        
+//                        hm.setCungSetMem();
+//                        hm.chia2Mang(n);
+//                        hm.tinhTien();
                         break;
                     case 4:
                         au.logOut();

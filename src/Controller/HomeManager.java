@@ -9,7 +9,6 @@ import Model.Pair;
 import Model.Person;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Scanner;
 
 /**
@@ -20,16 +19,12 @@ public class HomeManager {
 
     Scanner input = new Scanner(System.in);
     int n;
-    int n1 = 0;
-    int n2 = 0;
+    int n1;
+    int n2;
     ArrayList<Person> p;
     ArrayList<Pair> pair;
     ArrayList<Person> plon;
     ArrayList<Person> pbe;
-    double sumcung = 0;
-    double summem = 0;
-    double sumflex = 0;
-    double sumno = 0;
 
     public HomeManager() {
 
@@ -67,31 +62,32 @@ public class HomeManager {
                 a++;
             }
         }
-        System.out.println("Enter pair's debt");
-        System.out.println("If it is a correct direction, enter positive numbers ");
-        System.out.println("Else, enter negative numbers");
-        System.out.println("Enter 'next' to move on to the next pair!");
-        for (int i = 0; i < pair.size(); i++) {//tien no la tien no
-            System.out.print(pair.get(i).getPerson1().getName() + " owe " + pair.get(i).getPerson2().getName() + ": ");
-            double sum = 0;
-            while (true) {
-                String nhaptienno = input.nextLine();
-                if (nhaptienno.equalsIgnoreCase("next")) {
-                    break;
-                } else {
-                    try {
-                        double parsetienno = Double.parseDouble(nhaptienno);
-                        sum += parsetienno;
-                    } catch (NumberFormatException e) {
-                        System.out.println("Invalid input! Please enter next or a valid number");
-                    }
-                }
-            }
-            pair.get(i).setTienno(sum);
-        }
+//        System.out.println("Enter pair's debt");
+//        System.out.println("If it is a correct direction, enter positive numbers ");
+//        System.out.println("Else, enter negative numbers");
+//        System.out.println("Enter 'next' to move on to the next pair!");
+//        for (int i = 0; i < pair.size(); i++) {//tien no la tien no
+//            System.out.print(pair.get(i).getPerson1().getName() + " owe " + pair.get(i).getPerson2().getName() + ": ");
+//            double sum = 0;
+//            while (true) {
+//                String nhaptienno = input.nextLine();
+//                if (nhaptienno.equalsIgnoreCase("next")) {
+//                    break;
+//                } else {
+//                    try {
+//                        double parsetienno = Double.parseDouble(nhaptienno);
+//                        sum += parsetienno;
+//                    } catch (NumberFormatException e) {
+//                        System.out.println("Invalid input! Please enter next or a valid number");
+//                    }
+//                }
+//            }
+//            pair.get(i).setTienno(sum);
+//        }
     }
 
     public void nhapTienCung() {//tien cung la tien co dinh(chia deu cho tat ca thanh vien)
+        double sumcung = 0;
         System.out.print("Enter fixed expense: ");
         System.out.println("Fixed expense is the expense that will be equally shared for every member!");
         System.out.println("Enter 'quit' to move on to the next session!");
@@ -114,6 +110,7 @@ public class HomeManager {
     }
 
     public void nhapTienMem() {//tien mem la tien cua tung thanh vien phai tra
+        double summem = 0;
         System.out.println("Enter flexible expense: ");
         System.out.println("Flexible expense is the expense that depends on each member!");
         System.out.println("For example: Only 'Khanh' has motorbike, so only him has flexible expense is 150.000 VND paying for motorbike parking!");
@@ -140,15 +137,17 @@ public class HomeManager {
         }
     }
 
-    public void nhapTienFlex() {//tien flex la tien can chia deu cho tung thanh vien trong can ho
+    public void nhapTienFlex(int nSub, ArrayList<Person> pSub) {//tien flex la tien can chia deu cho tung thanh vien trong can ho
+        double sumflex = 0;
         System.out.println("Enter shared expense: ");
         System.out.println("Shared expense is the expense of each member that he/she spends to contribute to the living activities that need to be shared equally for each member!");
         System.out.println("Enter 'next' to move on to the next member!");
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < nSub; i++) {
             double sum = 0;
-            System.out.print("Shared expense of " + p.get(i).getName() + ": ");
+            System.out.print("Shared expense of " + pSub.get(i).getName() + ": ");
             while (true) {
                 String nhaptienflex = input.nextLine();
+
                 if (nhaptienflex.equalsIgnoreCase("next")) {
                     break;
                 } else {
@@ -161,10 +160,10 @@ public class HomeManager {
                 }
             }
             sumflex += sum;//tong tien flex
-            p.get(i).setFlex(sum);
+            pSub.get(i).setFlex(sum);
         }
-        for (int i = 0; i < n; i++) {// set su chenh lech cho tung thanh vien de tinh toan
-            p.get(i).setDiff(-sumflex * 1.0 / n + p.get(i).getFlex());
+        for (int i = 0; i < nSub; i++) {// set su chenh lech cho tung thanh vien de tinh toan
+            pSub.get(i).setDiff(-sumflex * 1.0 / nSub + pSub.get(i).getFlex());
         }
     }
 
@@ -190,107 +189,204 @@ public class HomeManager {
         } while (check);
     }
 
-    public void setCungSetMem() {//set tien cung tien mem cho tung cap ---- thu tu cap nhu sau Person1 Person 2 tienno <=> Person1 no Person2: tienno => neu tien no < 0 => Person2 no Person1: Math.abs(tienno)
-        for (int i = 0; i < pair.size(); i++) {
-            if (pair.get(i).getPerson1().isAdmin()) {//neu admin la Person1
-                pair.get(i).setTienno(-pair.get(i).getPerson2().getCung() - pair.get(i).getPerson2().getMem() + pair.get(i).getTienno());
-            } else if (pair.get(i).getPerson2().isAdmin()) {//neu admin la Person2
-                pair.get(i).setTienno(pair.get(i).getPerson1().getCung() + pair.get(i).getPerson1().getMem() + pair.get(i).getTienno());
+    public void setCungSetMem(ArrayList<Pair> pairSub) {//set tien cung tien mem cho tung cap ---- thu tu cap nhu sau Person1 Person 2 tienno <=> Person1 no Person2: tienno => neu tien no < 0 => Person2 no Person1: Math.abs(tienno)
+        for (int i = 0; i < pairSub.size(); i++) {
+            if (pairSub.get(i).getPerson1().isAdmin()) {//neu admin la Person1
+                pairSub.get(i).setTienno(-pairSub.get(i).getPerson2().getCung() - pairSub.get(i).getPerson2().getMem() + pairSub.get(i).getTienno());
+            } else if (pairSub.get(i).getPerson2().isAdmin()) {//neu admin la Person2
+                pairSub.get(i).setTienno(pairSub.get(i).getPerson1().getCung() + pairSub.get(i).getPerson1().getMem() + pairSub.get(i).getTienno());
             }
         }
     }
 
-    public void chia2Mang() {//chia 2 mang de tinh toan
-        for (int i = 0; i < n; i++) {
-            if (p.get(i).getDiff() > 0) {
-                plon.add(p.get(i)); //plon bao gom nhung thanh vien duoc nhan tien
+    public void chia2Mang(int nSub, ArrayList<Person> pSub, ArrayList<Person> plonSub, ArrayList<Person> pbeSub) {//chia 2 mang de tinh toan
+        n1 = 0;
+        n2 = 0;
+        for (int i = 0; i < nSub; i++) {
+            if (pSub.get(i).getDiff() > 0) {
+                plonSub.add(pSub.get(i)); //plon bao gom nhung thanh vien duoc nhan tien
                 n1++;
-            } else if (p.get(i).getDiff() < 0) {
-                pbe.add(p.get(i));//pbe bao gom nhung thanh vien phai tra tien
+            } else if (pSub.get(i).getDiff() < 0) {
+                pbeSub.add(pSub.get(i));//pbe bao gom nhung thanh vien phai tra tien
                 n2++;
             }
         }
         while (n1 != n2) {//truong hop 2 mang chenh lech do so nguoi le
             if (n1 > n2) {
-                pbe.add(new Person("newname", false, 0, 0, 0, 0));
+                pbeSub.add(new Person("newname", false, 0, 0, 0, 0));
                 n2++;
             } else if (n1 < n2) {
-                plon.add(new Person("newname", false, 0, 0, 0, 0));
+                plonSub.add(new Person("newname", false, 0, 0, 0, 0));
                 n1++;
             }
         }
-        Collections.sort(pbe, (Person p1, Person p2) -> Double.compare(p1.getDiff(), p2.getDiff()));
-        Collections.sort(plon, (Person p1, Person p2) -> Double.compare(p1.getDiff(), p2.getDiff()));
+        Collections.sort(pbeSub, (Person p1, Person p2) -> Double.compare(p2.getDiff(), p1.getDiff()));
+        Collections.sort(plonSub, (Person p1, Person p2) -> Double.compare(p2.getDiff(), p1.getDiff()));
+        for (int i = 0; i < n2; i++) {
+            System.out.println(pbeSub.get(i).getName() + "-" + pbeSub.get(i).getDiff());
+        }
+        for (int i = 0; i < n1; i++) {
+            System.out.println(plonSub.get(i).getName() + "-" + plonSub.get(i).getDiff());
+        }
 
+    }
+
+    public void setPairSub(int nSub, ArrayList<Pair> pairSub, ArrayList<Person> pSub) {//tao nC2 cap voi so tien no nhat dinh
+        pairSub.ensureCapacity(nSub * (nSub - 1) / 2);
+        int a = 0;
+        for (int i = 0; i < nSub - 1; i++) {
+            for (int j = i + 1; j < nSub; j++) {
+                if (a < pairSub.size()) {
+                    pairSub.get(a).setPerson1(pSub.get(i));
+                    pairSub.get(a).setPerson2(pSub.get(j));
+                } else {
+                    pairSub.add(new Pair(pSub.get(i), pSub.get(j), 0.0));
+                }
+                a++;
+            }
+        }
     }
 
     public void tinhTurn() {
+        ArrayList<Person> pSub;
+        ArrayList<Pair> pairSub;
+        ArrayList<Person> plonSub;
+        ArrayList<Person> pbeSub;
+        int nSub;
+        int count = 0;
         while (true) {
-            System.out.println("Nhap so nguoi se tinh luot nay:");
-            int n = input.nextInt();
+            pSub = new ArrayList<>();
+            pairSub = new ArrayList<>();
+            plonSub = new ArrayList<>();
+            pbeSub = new ArrayList<>();
+            count++;
+            nSub = 0;
+            System.out.print("Nhap so nguoi se tinh luot nay: ");
+            String nSubString = input.nextLine();
+            if (nSubString.equalsIgnoreCase("quit")) {
+                break;
+            }
+            try {
+                nSub = Integer.parseInt(nSubString);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input! Please enter next or a valid number");
+            }
+            System.out.println("Enter order number (" + nSub + ")");
+            System.out.println("Please enter in ascending order!");
+            for (int i = 0; i < nSub; ++i) {
+                System.out.print("Member: ");
+                int num = input.nextInt();
+                pSub.add(p.get(num - 1));
+                pSub.get(i).setDiff(0);
+                pSub.get(i).setFlex(0);
+            }
             input.nextLine();
-            System.out.println("Enter member (" + n + ")");
-            //Nhap ten thanh vien
-            for (int i = 0; i < n; ++i) {
-                System.out.print("Member " + (i + 1) + ": ");
-                String name = input.nextLine();
-                
+            setPairSub(nSub, pairSub, pSub);
+            nhapTienFlex(nSub, pSub);
+            if (count > 1) {
+                for (Person psub : pSub) {
+                    for (int i = 0; i < p.size(); i++) {
+                        if (p.get(i).equals(psub)) {
+                            p.get(i).setDiff(p.get(i).getDiff() + psub.getDiff());
+                        }
+                    }
+                }
+            }
+        }
+        setCungSetMem(pair);
+        chia2Mang(n, p, plon, pbe);
+        tinhTien(plon, pbe, pair);
+//        for (Pair pairsub : pairSub) {
+//            boolean found = false;
+//            // Iterate through the originalList
+//            for (int i = 0; i < pair.size(); i++) {
+//                Pair originalPair = pair.get(i);
+//                // Check if Person1 and Person2 match
+//                if (originalPair.getPerson1().equals(pairsub.getPerson1())
+//                        && originalPair.getPerson2().equals(pairsub.getPerson2())) {
+//                    // Replace the pair in originalList with the one from smallerList
+//                    //pair.set(i, pairsub);
+//                    pair.get(i).setTienno(pair.get(i).getTienno() + pairsub.getTienno());
+//                    found = true;
+//                    break; // No need to continue searching
+//                }
+//            }
+//            // If not found, add the pair from smallerList to originalList
+////                if (!found) {
+////                    pair.add(pairsub);
+////                }
+//        }
+        result(pair);
+    }
+
+    public void tinhTien(ArrayList<Person> plonSub, ArrayList<Person> pbeSub, ArrayList<Pair> pairSub) {//tinh tien se cho ra ket qua no giua tat ca cac cap bao gom: tien cung, tien mem, tien flex va tien no
+        for (int j = 0; j < n2; j++) {
+            for (int i = 0; i < n1; i++) {
+                if (plonSub.get(j).getDiff() <= Math.abs(pbeSub.get(i).getDiff())) {//check neu 1 trong 2 nguoi trong cap dang xet co so tien check lech = 0 se skip
+                    if (plonSub.get(j).getDiff() == 0 || pbeSub.get(i).getDiff() == 0) {
+                        continue;
+                    }
+                    for (int k = 0; k < pairSub.size(); k++) {
+                        if (pbeSub.get(i).equals(pairSub.get(k).getPerson1())) {//chieu thuan
+                            if (plonSub.get(j).equals(pairSub.get(k).getPerson2())) {//check cap dang xet = cap trong mang pair
+                                pairSub.get(k).setTienno(plonSub.get(j).getDiff() + pairSub.get(k).getTienno());//set tien no + them tien check lech 
+                                break;
+                            }
+                        } else if (plonSub.get(j).equals(pairSub.get(k).getPerson1())) {//chieu nguoc 
+                            if (pbeSub.get(i).equals(pairSub.get(k).getPerson2())) {//check cap dang xet = cap trong mang pair
+                                //pairSub.get(k).setTienno(pbeSub.get(i).getDiff() + pairSub.get(k).getTienno());//set tien no + them tien check lech 
+                                pairSub.get(k).setTienno(-plonSub.get(j).getDiff() + pairSub.get(k).getTienno());//set tien no + them tien check lech 
+                                break;
+                            }
+                        }
+                    }
+                    pbeSub.get(i).setDiff(pbeSub.get(i).getDiff() + plonSub.get(j).getDiff());
+                    plonSub.get(j).setDiff(0);
+                    System.out.println(pbeSub.get(i).getName() + "_" + pbeSub.get(i).getDiff());
+
+                } else {
+                    if (plonSub.get(j).getDiff() == 0 || pbeSub.get(i).getDiff() == 0) {
+                        continue;
+                    }
+                    for (int k = 0; k < pairSub.size(); k++) {
+                        if (pbeSub.get(i).equals(pairSub.get(k).getPerson1())) {//chieu thuan 
+                            if (plonSub.get(j).equals(pairSub.get(k).getPerson2())) {
+                                pairSub.get(k).setTienno(Math.abs(pbeSub.get(i).getDiff()) + pairSub.get(k).getTienno());
+                                break;
+                            }
+                        } else if (plonSub.get(j).equals(pairSub.get(k).getPerson1())) {//chieu nguoc
+                            if (pbeSub.get(i).equals(pairSub.get(k).getPerson2())) {
+                                pairSub.get(k).setTienno(pbeSub.get(i).getDiff() + pairSub.get(k).getTienno());
+                                break;
+                            }
+                        }
+                    }
+                    plonSub.get(j).setDiff(pbeSub.get(i).getDiff() + plonSub.get(j).getDiff());
+                    pbeSub.get(i).setDiff(0);
+                    System.out.println(plonSub.get(j).getName() + "_" + plonSub.get(j).getDiff());
+                }
             }
         }
     }
 
-    public void tinhTien() {//tinh tien se cho ra ket qua no giua tat ca cac cap bao gom: tien cung, tien mem, tien flex va tien no
-        for (int i = 0; i < n1; i++) {
-            for (int j = 0; j < n2; j++) {
-                if (plon.get(j).getDiff() <= Math.abs(pbe.get(i).getDiff())) {//check neu 1 trong 2 nguoi trong cap dang xet co so tien check lech = 0 se skip
-                    if (plon.get(j).getDiff() == 0 || pbe.get(i).getDiff() == 0) {
-                        continue;
-                    }
-                    for (int k = 0; k < pair.size(); k++) {
-                        if (pbe.get(i).equals(pair.get(k).getPerson1())) {//chieu thuan
-                            if (plon.get(j).equals(pair.get(k).getPerson2())) {//check cap dang xet = cap trong mang pair
-                                pair.get(k).setTienno(plon.get(j).getDiff() + pair.get(k).getTienno());//set tien no + them tien check lech 
-                                break;
-                            }
-                        } else if (plon.get(j).equals(pair.get(k).getPerson1())) {//chieu nguoc 
-                            if (pbe.get(i).equals(pair.get(k).getPerson2())) {//check cap dang xet = cap trong mang pair
-                                pair.get(k).setTienno(pbe.get(i).getDiff() + pair.get(k).getTienno());//set tien no + them tien check lech 
-                                break;
-                            }
-                        }
-                    }
-                    pbe.get(i).setDiff(pbe.get(i).getDiff() + plon.get(j).getDiff());
-                    plon.get(j).setDiff(0);
-                } else {
-                    if (plon.get(j).getDiff() == 0 || pbe.get(i).getDiff() == 0) {
-                        continue;
-                    }
-                    for (int k = 0; k < pair.size(); k++) {
-                        if (pbe.get(i).equals(pair.get(k).getPerson1())) {//chieu thuan 
-                            if (plon.get(j).equals(pair.get(k).getPerson2())) {
-                                pair.get(k).setTienno(Math.abs(pbe.get(i).getDiff()) + pair.get(k).getTienno());
-                                break;
-                            }
-                        } else if (plon.get(j).equals(pair.get(k).getPerson1())) {//chieu nguoc
-                            if (pbe.get(i).equals(pair.get(k).getPerson2())) {
-                                pair.get(k).setTienno(pbe.get(i).getDiff() + pair.get(k).getTienno());
-                                break;
-                            }
-                        }
-                    }
-                    plon.get(j).setDiff(pbe.get(i).getDiff() + plon.get(j).getDiff());
-                    pbe.get(i).setDiff(0);
-                }
+    public void result(ArrayList<Pair> pairSub) {
+        for (int i = 0; i < pairSub.size(); i++) {
+            if (pairSub.get(i).getTienno() > 0) {
+                System.out.printf("%s will pay %s: %.2f VND",
+                        pairSub.get(i).getPerson1().getName(),
+                        pairSub.get(i).getPerson2().getName(),
+                        pairSub.get(i).getTienno());
+                System.out.println("");
+            } else if (pairSub.get(i).getTienno() < 0) {
+                System.out.printf("%s will pay %s: %.2f VND",
+                        pairSub.get(i).getPerson2().getName(),
+                        pairSub.get(i).getPerson1().getName(),
+                        Math.abs(pairSub.get(i).getTienno()));
+                System.out.println("");
             }
+            //System.out.printf(pair.get(i).getPerson1().getName() + "-" + pair.get(i).getPerson2().getName() + ":" + pair.get(i).getTienno());
         }
-        for (int i = 0; i < pair.size(); i++) {
-            if (pair.get(i).getTienno() > 0) {
-                System.out.println(pair.get(i).getPerson1().getName() + " will pay " + pair.get(i).getPerson2().getName() + ": " + pair.get(i).getTienno() + " VND");
-            } else if (pair.get(i).getTienno() < 0) {
-                System.out.println(pair.get(i).getPerson2().getName() + " will pay " + pair.get(i).getPerson1().getName() + ": " + Math.abs(pair.get(i).getTienno()) + " VND");
-            }
-        }
-        System.out.println("Admin pay for fixed expense: " + sumcung + " VND");
-        System.out.println("Admin pay for flexible expense: " + summem + " VND");
+        //System.out.println("Admin pay for fixed expense: " + sumcung + " VND");
+        //System.out.println("Admin pay for flexible expense: " + summem + " VND");
     }
 }
