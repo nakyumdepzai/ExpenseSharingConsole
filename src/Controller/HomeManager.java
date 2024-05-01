@@ -25,6 +25,8 @@ public class HomeManager {
     ArrayList<Pair> pair;
     ArrayList<Person> plon;
     ArrayList<Person> pbe;
+    double summem = 0;
+    double sumcung = 0;
 
     public HomeManager() {
 
@@ -87,10 +89,9 @@ public class HomeManager {
     }
 
     public void nhapTienCung() {//tien cung la tien co dinh(chia deu cho tat ca thanh vien)
-        double sumcung = 0;
-        System.out.print("Enter fixed expense: ");
         System.out.println("Fixed expense is the expense that will be equally shared for every member!");
         System.out.println("Enter 'quit' to move on to the next session!");
+        System.out.print("Enter fixed expense: ");
         while (true) {
             String nhaptiencung = input.nextLine();
             if (nhaptiencung.equalsIgnoreCase("quit")) {
@@ -110,12 +111,12 @@ public class HomeManager {
     }
 
     public void nhapTienMem() {//tien mem la tien cua tung thanh vien phai tra
-        double summem = 0;
-        System.out.println("Enter flexible expense: ");
         System.out.println("Flexible expense is the expense that depends on each member!");
         System.out.println("For example: Only 'Khanh' has motorbike, so only him has flexible expense is 150.000 VND paying for motorbike parking!");
         System.out.println("If member doesn't has any flexible expense, enter 0!");
         System.out.println("Enter 'next' to move on to the next member!");
+        System.out.print("Enter flexible expense: ");
+
         for (int i = 0; i < n; i++) {
             double sum = 0;
             System.out.print("Flexible expense of " + p.get(i).getName() + " : ");
@@ -170,8 +171,8 @@ public class HomeManager {
     public void checkAdmin() {//admin se la nguoi chuyen khoan thanh toan cac khoan chi tieu
         int count = 0;
         boolean check = true;
-        System.out.println("Enter Admin's name: ");
         System.out.println("Admin will responsible for expense paying!");
+        System.out.print("Enter Admin's name: ");
         do {
             String admin = input.nextLine();
             int i;
@@ -252,10 +253,11 @@ public class HomeManager {
     public void tinhTurn() {
         ArrayList<Person> pSub;
         int nSub;
+        System.out.println("Calculate Shared Expense!");
         while (true) {
             pSub = new ArrayList<>();
             nSub = 0;
-            System.out.print("Nhap so nguoi se tinh luot nay: ");
+            System.out.print("Enter number of people will be calculated this turn: ");
             String nSubString = input.nextLine();
             if (nSubString.equalsIgnoreCase("quit")) {
                 break;
@@ -277,14 +279,14 @@ public class HomeManager {
 
             input.nextLine();
             nhapTienFlex(nSub, pSub);
-                for (Person psub : pSub) {
-                    for (int i = 0; i < p.size(); i++) {
-                        if (p.get(i).getName().equals(psub.getName())) {
-                            p.get(i).setDiff(p.get(i).getDiff() + psub.getDiff());
-                        }
+            for (Person psub : pSub) {
+                for (int i = 0; i < p.size(); i++) {
+                    if (p.get(i).getName().equals(psub.getName())) {
+                        p.get(i).setDiff(p.get(i).getDiff() + psub.getDiff());
                     }
                 }
             }
+        }
         setCungSetMem(pair);
         chia2Mang(n, p, plon, pbe);
         tinhTien(plon, pbe, pair);
@@ -314,8 +316,6 @@ public class HomeManager {
                     }
                     pbeSub.get(i).setDiff(pbeSub.get(i).getDiff() + plonSub.get(j).getDiff());
                     plonSub.get(j).setDiff(0);
-                    System.out.println(pbeSub.get(i).getName() + "_" + pbeSub.get(i).getDiff());
-
                 } else {
                     if (plonSub.get(j).getDiff() == 0 || pbeSub.get(i).getDiff() == 0) {
                         continue;
@@ -335,7 +335,6 @@ public class HomeManager {
                     }
                     plonSub.get(j).setDiff(pbeSub.get(i).getDiff() + plonSub.get(j).getDiff());
                     pbeSub.get(i).setDiff(0);
-                    System.out.println(plonSub.get(j).getName() + "_" + plonSub.get(j).getDiff());
                 }
             }
         }
@@ -356,6 +355,14 @@ public class HomeManager {
                         Math.abs(pairSub.get(i).getTienno()));
                 System.out.println("");
             }
+        }
+
+        if (summem > 0) {
+            System.out.println("Admin tra tien mem:" + summem + "kVND");
+        }
+
+        if (sumcung > 0) {
+            System.out.println("Admin tra tien cung: " + sumcung + "kVND");
         }
     }
 }
