@@ -232,6 +232,8 @@ public class HomeManager {
     }
 
     public void setPairSub(int nSub, ArrayList<Pair> pairSub, ArrayList<Person> pSub) {//tao nC2 cap voi so tien no nhat dinh
+        pairSub = new ArrayList<>();
+        pSub = new ArrayList<>();
         pairSub.ensureCapacity(nSub * (nSub - 1) / 2);
         int a = 0;
         for (int i = 0; i < nSub - 1; i++) {
@@ -249,17 +251,9 @@ public class HomeManager {
 
     public void tinhTurn() {
         ArrayList<Person> pSub;
-        ArrayList<Pair> pairSub;
-        ArrayList<Person> plonSub;
-        ArrayList<Person> pbeSub;
         int nSub;
-        int count = 0;
         while (true) {
             pSub = new ArrayList<>();
-            pairSub = new ArrayList<>();
-            plonSub = new ArrayList<>();
-            pbeSub = new ArrayList<>();
-            count++;
             nSub = 0;
             System.out.print("Nhap so nguoi se tinh luot nay: ");
             String nSubString = input.nextLine();
@@ -276,46 +270,24 @@ public class HomeManager {
             for (int i = 0; i < nSub; ++i) {
                 System.out.print("Member: ");
                 int num = input.nextInt();
-                pSub.add(p.get(num - 1));
-                pSub.get(i).setDiff(0);
-                pSub.get(i).setFlex(0);
+                Person personFromP = p.get(num - 1);
+                Person newPerson = new Person(personFromP.getName());
+                pSub.add(newPerson);
             }
+
             input.nextLine();
-            setPairSub(nSub, pairSub, pSub);
             nhapTienFlex(nSub, pSub);
-            if (count > 1) {
                 for (Person psub : pSub) {
                     for (int i = 0; i < p.size(); i++) {
-                        if (p.get(i).equals(psub)) {
+                        if (p.get(i).getName().equals(psub.getName())) {
                             p.get(i).setDiff(p.get(i).getDiff() + psub.getDiff());
                         }
                     }
                 }
             }
-        }
         setCungSetMem(pair);
         chia2Mang(n, p, plon, pbe);
         tinhTien(plon, pbe, pair);
-//        for (Pair pairsub : pairSub) {
-//            boolean found = false;
-//            // Iterate through the originalList
-//            for (int i = 0; i < pair.size(); i++) {
-//                Pair originalPair = pair.get(i);
-//                // Check if Person1 and Person2 match
-//                if (originalPair.getPerson1().equals(pairsub.getPerson1())
-//                        && originalPair.getPerson2().equals(pairsub.getPerson2())) {
-//                    // Replace the pair in originalList with the one from smallerList
-//                    //pair.set(i, pairsub);
-//                    pair.get(i).setTienno(pair.get(i).getTienno() + pairsub.getTienno());
-//                    found = true;
-//                    break; // No need to continue searching
-//                }
-//            }
-//            // If not found, add the pair from smallerList to originalList
-////                if (!found) {
-////                    pair.add(pairsub);
-////                }
-//        }
         result(pair);
     }
 
@@ -384,9 +356,6 @@ public class HomeManager {
                         Math.abs(pairSub.get(i).getTienno()));
                 System.out.println("");
             }
-            //System.out.printf(pair.get(i).getPerson1().getName() + "-" + pair.get(i).getPerson2().getName() + ":" + pair.get(i).getTienno());
         }
-        //System.out.println("Admin pay for fixed expense: " + sumcung + " VND");
-        //System.out.println("Admin pay for flexible expense: " + summem + " VND");
     }
 }
