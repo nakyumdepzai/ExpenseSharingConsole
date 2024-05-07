@@ -115,7 +115,7 @@ public class HomeManager {
         System.out.println("For example: Only 'Khanh' has motorbike, so only him has flexible expense is 150.000 VND paying for motorbike parking!");
         System.out.println("If member doesn't has any flexible expense, enter 0!");
         System.out.println("Enter 'next' to move on to the next member!");
-        System.out.print("Enter flexible expense: ");
+        System.out.println("Enter flexible expense: ");
 
         for (int i = 0; i < n; i++) {
             double sum = 0;
@@ -285,7 +285,11 @@ public class HomeManager {
                         p.get(i).setDiff(p.get(i).getDiff() + psub.getDiff());
                     }
                 }
+                System.out.print(psub.getName() + "| ");
+                System.out.print(psub.getDiff() + "| ");
+                System.out.println("\n");
             }
+
         }
         setCungSetMem(pair);
         chia2Mang(n, p, plon, pbe);
@@ -358,7 +362,7 @@ public class HomeManager {
         }
 
         if (summem > 0) {
-            System.out.println("Admin tra tien mem:" + summem + "kVND");
+            System.out.println("Admin tra tien mem: " + summem + "kVND");
         }
 
         if (sumcung > 0) {

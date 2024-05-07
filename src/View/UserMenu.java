@@ -47,7 +47,7 @@ public class UserMenu {
                         au.updateUserProfile();
                         break;
                     case 2:
-                            System.out.print("Enter number of people: ");
+                        System.out.print("Enter number of people: ");
                         int n = input.nextInt();
                         input.nextLine();
                         hm.nhapSoLuong(n);
@@ -60,7 +60,7 @@ public class UserMenu {
 //                        hm.tinhTien();
                         break;
                     case 3:
-                        System.out.print("Nhap so nguoi: ");
+                        System.out.print("Enter number of people: ");
                         n = input.nextInt();
                         input.nextLine();
                         hm.nhapSoLuong(n);
