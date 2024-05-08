@@ -283,6 +283,7 @@ public class HomeManager {
                 for (int i = 0; i < p.size(); i++) {
                     if (p.get(i).getName().equals(psub.getName())) {
                         p.get(i).setDiff(p.get(i).getDiff() + psub.getDiff());
+                        p.get(i).setCung(p.get(i).getCung() + psub.getCung());
                     }
                 }
                 System.out.print(psub.getName() + "| ");
