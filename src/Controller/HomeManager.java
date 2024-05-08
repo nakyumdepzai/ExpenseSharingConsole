@@ -252,6 +252,44 @@ public class HomeManager {
     public void calculateTurn(int choice) {
         ArrayList<Person> pSub;
         int nSub;
+        if (choice == 3) {
+            System.out.println("Calculate Fixed Expense!");
+            while (true) {
+                pSub = new ArrayList<>();
+                nSub = 0;
+                System.out.print("Enter number of people will be calculated this turn: ");
+                String nSubString = input.nextLine();
+                if (nSubString.equalsIgnoreCase("quit")) {
+                    break;
+                }
+                try {
+                    nSub = Integer.parseInt(nSubString);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input! Please enter next or a valid number");
+                }
+                System.out.println("Enter order number (" + nSub + ")");
+                System.out.println("Please enter in ascending order!");
+                for (int i = 0; i < nSub; ++i) {
+                    System.out.print("Member: ");
+                    int num = input.nextInt();
+                    Person personFromP = p.get(num - 1);
+                    Person newPerson = new Person(personFromP.getName());
+                    pSub.add(newPerson);
+                }
+                input.nextLine();
+                importFixedAmount(nSub, pSub);
+                for (Person psub : pSub) {
+                    for (int i = 0; i < p.size(); i++) {
+                        if (p.get(i).getName().equals(psub.getName())) {
+                            p.get(i).setCung(p.get(i).getCung() + psub.getCung());
+                        }
+                    }
+                }
+            }
+        }
+        if (choice == 3) {
+            importFlexibleAmount();
+        }
         System.out.println("Calculate Shared Expense!");
         while (true) {
             pSub = new ArrayList<>();
@@ -276,16 +314,11 @@ public class HomeManager {
                 pSub.add(newPerson);
             }
             input.nextLine();
-            if (choice == 3) {
-                importFixedAmount(nSub, pSub);
-                importFlexibleAmount();
-            }
             importSharedAmount(nSub, pSub);
             for (Person psub : pSub) {
                 for (int i = 0; i < p.size(); i++) {
                     if (p.get(i).getName().equals(psub.getName())) {
                         p.get(i).setDiff(p.get(i).getDiff() + psub.getDiff());
-                        p.get(i).setCung(p.get(i).getCung() + psub.getCung());
                     }
                 }
                 System.out.print(psub.getName() + "| ");
