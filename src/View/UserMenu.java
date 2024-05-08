@@ -50,31 +50,20 @@ public class UserMenu {
                         System.out.print("Enter number of people: ");
                         int n = input.nextInt();
                         input.nextLine();
-                        hm.nhapSoLuong(n);
-                        hm.nhapThanhVien(n);
+                        hm.importMemberQuantity(n);
+                        hm.importMember(n);
                         hm.setPair(n);
-                        hm.tinhTurn();
-//                        hm.nhapTienFlex();
-//                        hm.setCungSetMem();
-//                        hm.chia2Mang();
-//                        hm.tinhTien();
+                        hm.calculateTurn();
                         break;
                     case 3:
                         System.out.print("Enter number of people: ");
                         n = input.nextInt();
                         input.nextLine();
-                        hm.nhapSoLuong(n);
-                        hm.nhapThanhVien(n);
+                        hm.importMemberQuantity(n);
+                        hm.importMember(n);
                         hm.setPair(n);
-                        hm.nhapTienCung();
-                        hm.nhapTienMem();
                         hm.checkAdmin();
-                        hm.tinhTurn();
-//                        hm.nhapTienFlex(n);
-//                        
-//                        hm.setCungSetMem();
-//                        hm.chia2Mang(n);
-//                        hm.tinhTien();
+                        hm.calculateTurn();
                         break;
                     case 4:
                         au.logOut();

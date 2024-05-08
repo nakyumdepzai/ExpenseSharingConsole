@@ -23,34 +23,33 @@ public class HomeManager {
     int n2;
     ArrayList<Person> p;
     ArrayList<Pair> pair;
-    ArrayList<Person> plon;
-    ArrayList<Person> pbe;
-    double summem = 0;
-    double sumcung = 0;
+    ArrayList<Person> pPos;
+    ArrayList<Person> pNeg;
+    double sumFlexible = 0;
+    double sumFixed = 0;
 
     public HomeManager() {
 
     }
 
-    public void nhapSoLuong(int n) {
+    public void importMemberQuantity(int n) {
         this.n = n;
         p = new ArrayList<>();
-        plon = new ArrayList<>();
-        pbe = new ArrayList<>();
+        pPos = new ArrayList<>();
+        pNeg = new ArrayList<>();
         pair = new ArrayList<>();
     }
 
-    public void nhapThanhVien(int n) {
+    public void importMember(int n) {
         System.out.println("Enter member (" + n + ")");
-        //Nhap ten thanh vien
         for (int i = 0; i < n; ++i) {
             System.out.print("Member " + (i + 1) + ": ");
             String name = input.nextLine();
-            p.add(new Person(name)); //them thanh vien vao mang p
+            p.add(new Person(name)); 
         }
     }
 
-    public void setPair(int n) {//tao nC2 cap voi so tien no nhat dinh
+    public void setPair(int n) {
         pair.ensureCapacity(n * (n - 1) / 2);
         int a = 0;
         for (int i = 0; i < n - 1; i++) {
@@ -88,29 +87,29 @@ public class HomeManager {
 //        }
     }
 
-    public void nhapTienCung() {//tien cung la tien co dinh(chia deu cho tat ca thanh vien)
+    public void importFixedAmount(int nSub, ArrayList<Person> pSub) {//tien cung la tien co dinh(chia deu cho tat ca thanh vien)
         System.out.println("Fixed expense is the expense that will be equally shared for every member!");
         System.out.println("Enter 'quit' to move on to the next session!");
         System.out.print("Enter fixed expense: ");
         while (true) {
-            String nhaptiencung = input.nextLine();
-            if (nhaptiencung.equalsIgnoreCase("quit")) {
+            String fixedExpense = input.nextLine();
+            if (fixedExpense.equalsIgnoreCase("quit")) {
                 break;
             } else {
                 try {
-                    double parsetiencung = Double.parseDouble(nhaptiencung);
-                    sumcung += parsetiencung;
+                    double parsedFixedExpense = Double.parseDouble(fixedExpense);
+                    sumFixed += parsedFixedExpense;
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid input! Please enter quit or a valid number");
                 }
             }
         }
-        for (int i = 0; i < n; i++) {// set tien cung cho tung thanh vien
-            p.get(i).setCung(sumcung * 1.0 / n);
+        for (int i = 0; i < nSub; i++) {// set tien cung cho tung thanh vien
+            pSub.get(i).setCung(sumFixed * 1.0 / nSub);
         }
     }
 
-    public void nhapTienMem() {//tien mem la tien cua tung thanh vien phai tra
+    public void importFlexibleAmount() {//tien mem la tien cua tung thanh vien phai tra
         System.out.println("Flexible expense is the expense that depends on each member!");
         System.out.println("For example: Only 'Khanh' has motorbike, so only him has flexible expense is 150.000 VND paying for motorbike parking!");
         System.out.println("If member doesn't has any flexible expense, enter 0!");
@@ -121,24 +120,24 @@ public class HomeManager {
             double sum = 0;
             System.out.print("Flexible expense of " + p.get(i).getName() + " : ");
             while (true) {
-                String nhaptienmem = input.nextLine();
-                if (nhaptienmem.equalsIgnoreCase("next")) {
+                String flexibleExpense = input.nextLine();
+                if (flexibleExpense.equalsIgnoreCase("next")) {
                     break;
                 } else {
                     try {
-                        double parsetienmem = Double.parseDouble(nhaptienmem);
-                        sum += parsetienmem;
+                        double parsedFlexibleExpense = Double.parseDouble(flexibleExpense);
+                        sum += parsedFlexibleExpense;
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid input! Please enter next or a valid number");
                     }
                 }
             }
-            summem += sum;//tong tien mem
+            sumFlexible += sum;//tong tien mem
             p.get(i).setMem(sum); //set tien mem cho tung thanh vien
         }
     }
 
-    public void nhapTienFlex(int nSub, ArrayList<Person> pSub) {//tien flex la tien can chia deu cho tung thanh vien trong can ho
+    public void importSharedAmount(int nSub, ArrayList<Person> pSub) {//tien flex la tien can chia deu cho tung thanh vien trong can ho
         double sumflex = 0;
         System.out.println("Enter shared expense: ");
         System.out.println("Shared expense is the expense of each member that he/she spends to contribute to the living activities that need to be shared equally for each member!");
@@ -147,14 +146,14 @@ public class HomeManager {
             double sum = 0;
             System.out.print("Shared expense of " + pSub.get(i).getName() + ": ");
             while (true) {
-                String nhaptienflex = input.nextLine();
+                String sharedExpense = input.nextLine();
 
-                if (nhaptienflex.equalsIgnoreCase("next")) {
+                if (sharedExpense.equalsIgnoreCase("next")) {
                     break;
                 } else {
                     try {
-                        double parsetienflex = Double.parseDouble(nhaptienflex);
-                        sum += parsetienflex;
+                        double parsedSharedExpense = Double.parseDouble(sharedExpense);
+                        sum += parsedSharedExpense;
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid input! Please enter next or a valid number");
                     }
@@ -190,44 +189,44 @@ public class HomeManager {
         } while (check);
     }
 
-    public void setCungSetMem(ArrayList<Pair> pairSub) {//set tien cung tien mem cho tung cap ---- thu tu cap nhu sau Person1 Person 2 tienno <=> Person1 no Person2: tienno => neu tien no < 0 => Person2 no Person1: Math.abs(tienno)
+    public void setIntoDebt(ArrayList<Pair> pairSub) {//set tien cung tien mem cho tung cap ---- thu tu cap nhu sau Person1 Person 2 tienno <=> Person1 no Person2: tienno => neu tien no < 0 => Person2 no Person1: Math.abs(tienno)
         for (int i = 0; i < pairSub.size(); i++) {
             if (pairSub.get(i).getPerson1().isAdmin()) {//neu admin la Person1
-                pairSub.get(i).setTienno(-pairSub.get(i).getPerson2().getCung() - pairSub.get(i).getPerson2().getMem() + pairSub.get(i).getTienno());
+                pairSub.get(i).setDebt(-pairSub.get(i).getPerson2().getCung() - pairSub.get(i).getPerson2().getMem() + pairSub.get(i).getDebt());
             } else if (pairSub.get(i).getPerson2().isAdmin()) {//neu admin la Person2
-                pairSub.get(i).setTienno(pairSub.get(i).getPerson1().getCung() + pairSub.get(i).getPerson1().getMem() + pairSub.get(i).getTienno());
+                pairSub.get(i).setDebt(pairSub.get(i).getPerson1().getCung() + pairSub.get(i).getPerson1().getMem() + pairSub.get(i).getDebt());
             }
         }
     }
 
-    public void chia2Mang(int nSub, ArrayList<Person> pSub, ArrayList<Person> plonSub, ArrayList<Person> pbeSub) {//chia 2 mang de tinh toan
+    public void setP(int nSub, ArrayList<Person> pSub, ArrayList<Person> pPosSub, ArrayList<Person> pNegSub) {//chia 2 mang de tinh toan
         n1 = 0;
         n2 = 0;
         for (int i = 0; i < nSub; i++) {
             if (pSub.get(i).getDiff() > 0) {
-                plonSub.add(pSub.get(i)); //plon bao gom nhung thanh vien duoc nhan tien
+                pPosSub.add(pSub.get(i)); //pPos bao gom nhung thanh vien duoc nhan tien
                 n1++;
             } else if (pSub.get(i).getDiff() < 0) {
-                pbeSub.add(pSub.get(i));//pbe bao gom nhung thanh vien phai tra tien
+                pNegSub.add(pSub.get(i));//pNeg bao gom nhung thanh vien phai tra tien
                 n2++;
             }
         }
         while (n1 != n2) {//truong hop 2 mang chenh lech do so nguoi le
             if (n1 > n2) {
-                pbeSub.add(new Person("newname", false, 0, 0, 0, 0));
+                pNegSub.add(new Person("newname", false, 0, 0, 0, 0));
                 n2++;
             } else if (n1 < n2) {
-                plonSub.add(new Person("newname", false, 0, 0, 0, 0));
+                pPosSub.add(new Person("newname", false, 0, 0, 0, 0));
                 n1++;
             }
         }
-        Collections.sort(pbeSub, (Person p1, Person p2) -> Double.compare(p2.getDiff(), p1.getDiff()));
-        Collections.sort(plonSub, (Person p1, Person p2) -> Double.compare(p2.getDiff(), p1.getDiff()));
+        Collections.sort(pNegSub, (Person p1, Person p2) -> Double.compare(p2.getDiff(), p1.getDiff()));
+        Collections.sort(pPosSub, (Person p1, Person p2) -> Double.compare(p2.getDiff(), p1.getDiff()));
         for (int i = 0; i < n2; i++) {
-            System.out.println(pbeSub.get(i).getName() + "-" + pbeSub.get(i).getDiff());
+            System.out.println(pNegSub.get(i).getName() + "-" + pNegSub.get(i).getDiff());
         }
         for (int i = 0; i < n1; i++) {
-            System.out.println(plonSub.get(i).getName() + "-" + plonSub.get(i).getDiff());
+            System.out.println(pPosSub.get(i).getName() + "-" + pPosSub.get(i).getDiff());
         }
 
     }
@@ -250,7 +249,7 @@ public class HomeManager {
         }
     }
 
-    public void tinhTurn() {
+    public void calculateTurn() {
         ArrayList<Person> pSub;
         int nSub;
         System.out.println("Calculate Shared Expense!");
@@ -276,9 +275,10 @@ public class HomeManager {
                 Person newPerson = new Person(personFromP.getName());
                 pSub.add(newPerson);
             }
-
             input.nextLine();
-            nhapTienFlex(nSub, pSub);
+            importFixedAmount(nSub, pSub);
+            importFlexibleAmount();
+            importSharedAmount(nSub, pSub);
             for (Person psub : pSub) {
                 for (int i = 0; i < p.size(); i++) {
                     if (p.get(i).getName().equals(psub.getName())) {
@@ -291,54 +291,54 @@ public class HomeManager {
             }
 
         }
-        setCungSetMem(pair);
-        chia2Mang(n, p, plon, pbe);
-        tinhTien(plon, pbe, pair);
+        setIntoDebt(pair);
+        setP(n, p, pPos, pNeg);
+        calculateExpense(pPos, pNeg, pair);
         result(pair);
     }
 
-    public void tinhTien(ArrayList<Person> plonSub, ArrayList<Person> pbeSub, ArrayList<Pair> pairSub) {//tinh tien se cho ra ket qua no giua tat ca cac cap bao gom: tien cung, tien mem, tien flex va tien no
+    public void calculateExpense(ArrayList<Person> pPosSub, ArrayList<Person> pNegSub, ArrayList<Pair> pairSub) {//tinh tien se cho ra ket qua no giua tat ca cac cap bao gom: tien cung, tien mem, tien flex va tien no
         for (int j = 0; j < n2; j++) {
             for (int i = 0; i < n1; i++) {
-                if (plonSub.get(j).getDiff() <= Math.abs(pbeSub.get(i).getDiff())) {//check neu 1 trong 2 nguoi trong cap dang xet co so tien check lech = 0 se skip
-                    if (plonSub.get(j).getDiff() == 0 || pbeSub.get(i).getDiff() == 0) {
+                if (pPosSub.get(j).getDiff() <= Math.abs(pNegSub.get(i).getDiff())) {//check neu 1 trong 2 nguoi trong cap dang xet co so tien check lech = 0 se skip
+                    if (pPosSub.get(j).getDiff() == 0 || pNegSub.get(i).getDiff() == 0) {
                         continue;
                     }
                     for (int k = 0; k < pairSub.size(); k++) {
-                        if (pbeSub.get(i).equals(pairSub.get(k).getPerson1())) {//chieu thuan
-                            if (plonSub.get(j).equals(pairSub.get(k).getPerson2())) {//check cap dang xet = cap trong mang pair
-                                pairSub.get(k).setTienno(plonSub.get(j).getDiff() + pairSub.get(k).getTienno());//set tien no + them tien check lech 
+                        if (pNegSub.get(i).equals(pairSub.get(k).getPerson1())) {//chieu thuan
+                            if (pPosSub.get(j).equals(pairSub.get(k).getPerson2())) {//check cap dang xet = cap trong mang pair
+                                pairSub.get(k).setDebt(pPosSub.get(j).getDiff() + pairSub.get(k).getDebt());//set tien no + them tien check lech 
                                 break;
                             }
-                        } else if (plonSub.get(j).equals(pairSub.get(k).getPerson1())) {//chieu nguoc 
-                            if (pbeSub.get(i).equals(pairSub.get(k).getPerson2())) {//check cap dang xet = cap trong mang pair
+                        } else if (pPosSub.get(j).equals(pairSub.get(k).getPerson1())) {//chieu nguoc 
+                            if (pNegSub.get(i).equals(pairSub.get(k).getPerson2())) {//check cap dang xet = cap trong mang pair
                                 //pairSub.get(k).setTienno(pbeSub.get(i).getDiff() + pairSub.get(k).getTienno());//set tien no + them tien check lech 
-                                pairSub.get(k).setTienno(-plonSub.get(j).getDiff() + pairSub.get(k).getTienno());//set tien no + them tien check lech 
+                                pairSub.get(k).setDebt(-pPosSub.get(j).getDiff() + pairSub.get(k).getDebt());//set tien no + them tien check lech 
                                 break;
                             }
                         }
                     }
-                    pbeSub.get(i).setDiff(pbeSub.get(i).getDiff() + plonSub.get(j).getDiff());
-                    plonSub.get(j).setDiff(0);
+                    pNegSub.get(i).setDiff(pNegSub.get(i).getDiff() + pPosSub.get(j).getDiff());
+                    pPosSub.get(j).setDiff(0);
                 } else {
-                    if (plonSub.get(j).getDiff() == 0 || pbeSub.get(i).getDiff() == 0) {
+                    if (pPosSub.get(j).getDiff() == 0 || pNegSub.get(i).getDiff() == 0) {
                         continue;
                     }
                     for (int k = 0; k < pairSub.size(); k++) {
-                        if (pbeSub.get(i).equals(pairSub.get(k).getPerson1())) {//chieu thuan 
-                            if (plonSub.get(j).equals(pairSub.get(k).getPerson2())) {
-                                pairSub.get(k).setTienno(Math.abs(pbeSub.get(i).getDiff()) + pairSub.get(k).getTienno());
+                        if (pNegSub.get(i).equals(pairSub.get(k).getPerson1())) {//chieu thuan 
+                            if (pPosSub.get(j).equals(pairSub.get(k).getPerson2())) {
+                                pairSub.get(k).setDebt(Math.abs(pNegSub.get(i).getDiff()) + pairSub.get(k).getDebt());
                                 break;
                             }
-                        } else if (plonSub.get(j).equals(pairSub.get(k).getPerson1())) {//chieu nguoc
-                            if (pbeSub.get(i).equals(pairSub.get(k).getPerson2())) {
-                                pairSub.get(k).setTienno(pbeSub.get(i).getDiff() + pairSub.get(k).getTienno());
+                        } else if (pPosSub.get(j).equals(pairSub.get(k).getPerson1())) {//chieu nguoc
+                            if (pNegSub.get(i).equals(pairSub.get(k).getPerson2())) {
+                                pairSub.get(k).setDebt(pNegSub.get(i).getDiff() + pairSub.get(k).getDebt());
                                 break;
                             }
                         }
                     }
-                    plonSub.get(j).setDiff(pbeSub.get(i).getDiff() + plonSub.get(j).getDiff());
-                    pbeSub.get(i).setDiff(0);
+                    pPosSub.get(j).setDiff(pNegSub.get(i).getDiff() + pPosSub.get(j).getDiff());
+                    pNegSub.get(i).setDiff(0);
                 }
             }
         }
@@ -346,27 +346,27 @@ public class HomeManager {
 
     public void result(ArrayList<Pair> pairSub) {
         for (int i = 0; i < pairSub.size(); i++) {
-            if (pairSub.get(i).getTienno() > 0) {
+            if (pairSub.get(i).getDebt() > 0) {
                 System.out.printf("%s will pay %s: %.2f VND",
                         pairSub.get(i).getPerson1().getName(),
                         pairSub.get(i).getPerson2().getName(),
-                        pairSub.get(i).getTienno());
+                        pairSub.get(i).getDebt());
                 System.out.println("");
-            } else if (pairSub.get(i).getTienno() < 0) {
+            } else if (pairSub.get(i).getDebt() < 0) {
                 System.out.printf("%s will pay %s: %.2f VND",
                         pairSub.get(i).getPerson2().getName(),
                         pairSub.get(i).getPerson1().getName(),
-                        Math.abs(pairSub.get(i).getTienno()));
+                        Math.abs(pairSub.get(i).getDebt()));
                 System.out.println("");
             }
         }
 
-        if (summem > 0) {
-            System.out.println("Admin tra tien mem: " + summem + "kVND");
+        if (sumFlexible > 0) {
+            System.out.println("Admin pay for flexible expense: " + sumFlexible + "kVND");
         }
 
-        if (sumcung > 0) {
-            System.out.println("Admin tra tien cung: " + sumcung + "kVND");
+        if (sumFixed > 0) {
+            System.out.println("Admin pay for fixed expense: " + sumFixed + "kVND");
         }
     }
 }

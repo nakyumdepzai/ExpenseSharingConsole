@@ -13,15 +13,15 @@ public class Pair {
 
     Person person1;
     Person person2;
-    double tienno;
+    double debt;
 
     public Pair() {
     }
 
-    public Pair(Person person1, Person person2, double tienno) {
+    public Pair(Person person1, Person person2, double debt) {
         this.person1 = person1;
         this.person2 = person2;
-        this.tienno = tienno;
+        this.debt = debt;
     }
 
     public Person getPerson1() {
@@ -32,8 +32,8 @@ public class Pair {
         return person2;
     }
 
-    public double getTienno() {
-        return tienno;
+    public double getDebt() {
+        return debt;
     }
 
     public void setPerson1(Person person1) {
@@ -44,8 +44,8 @@ public class Pair {
         this.person2 = person2;
     }
 
-    public void setTienno(double tienno) {
-        this.tienno = tienno;
+    public void setDebt(double debt) {
+        this.debt = debt;
     }
 
 
