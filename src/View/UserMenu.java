@@ -53,7 +53,7 @@ public class UserMenu {
                         hm.importMemberQuantity(n);
                         hm.importMember(n);
                         hm.setPair(n);
-                        hm.calculateTurn();
+                        hm.calculateTurn(choice);
                         break;
                     case 3:
                         System.out.print("Enter number of people: ");
@@ -63,7 +63,7 @@ public class UserMenu {
                         hm.importMember(n);
                         hm.setPair(n);
                         hm.checkAdmin();
-                        hm.calculateTurn();
+                        hm.calculateTurn(choice);
                         break;
                     case 4:
                         au.logOut();

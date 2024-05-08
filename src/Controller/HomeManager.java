@@ -45,7 +45,7 @@ public class HomeManager {
         for (int i = 0; i < n; ++i) {
             System.out.print("Member " + (i + 1) + ": ");
             String name = input.nextLine();
-            p.add(new Person(name)); 
+            p.add(new Person(name));
         }
     }
 
@@ -249,7 +249,7 @@ public class HomeManager {
         }
     }
 
-    public void calculateTurn() {
+    public void calculateTurn(int choice) {
         ArrayList<Person> pSub;
         int nSub;
         System.out.println("Calculate Shared Expense!");
@@ -276,8 +276,10 @@ public class HomeManager {
                 pSub.add(newPerson);
             }
             input.nextLine();
-            importFixedAmount(nSub, pSub);
-            importFlexibleAmount();
+            if (choice == 3) {
+                importFixedAmount(nSub, pSub);
+                importFlexibleAmount();
+            }
             importSharedAmount(nSub, pSub);
             for (Person psub : pSub) {
                 for (int i = 0; i < p.size(); i++) {
